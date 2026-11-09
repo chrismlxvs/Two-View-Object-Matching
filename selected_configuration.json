@@ -1,0 +1,21 @@
+{
+  "method": "shared YOLO26n detector at 960 pixels with DINOv2/HSV/camera-feature scene-level matcher; no low-confidence recovery",
+  "detector_checkpoint": "model/yolo26n_amodal_best.pt",
+  "matcher_checkpoint": "model/scene_matcher_960.pt",
+  "inference_confidence": 0.45,
+  "inference_image_size": 960,
+  "nms_iou": 0.6,
+  "max_detections_per_view": 40,
+  "association_utility_threshold": -2.100000000000021,
+  "matcher_training_scenes": 800,
+  "threshold_calibration_scenes": 200,
+  "validation": {
+    "detection_f1": 0.980510752688172,
+    "association_f1": 0.9530612244897959,
+    "given_detection_association_f1": 0.9840210711150131,
+    "count_mae": 0.23,
+    "exact_count_accuracy": 0.79
+  },
+  "test_scenes": 200,
+  "test_accuracy_measured": false
+}

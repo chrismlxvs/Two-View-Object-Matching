@@ -1,0 +1,30 @@
+# Course data is distributed separately; retain only the layout note.
+code/train/**
+code/val/**
+code/test/**
+!code/train/README.md
+!code/val/README.md
+!code/test/README.md
+
+# Local environments, caches, and model training outputs.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.cache/
+code/baseline/cache/
+code/baseline/yolo/
+code/baseline/runs/
+code/baseline/diagnostics*/
+code/baseline/*.pt
+
+# Generated predictions and LaTeX build products.
+predictions*.json
+val_*.json
+report/*.aux
+report/*.bbl
+report/*.blg
+report/*.log
+report/*.out
+report/*.synctex.gz
+report/*.pdf

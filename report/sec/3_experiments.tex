@@ -1,0 +1,28 @@
+\section{Experiments}
+\subsection{Data and metrics}
+The release contains 1,000 training pairs, 200 validation pairs, and 200 unlabeled test pairs. All reported scores use the supplied evaluator at box IoU 0.5. Detection F1 pools boxes across both views. Association F1 requires both submitted boxes to match the same ground-truth object. Given-detection association F1 isolates pairing quality when both boxes already match some ground truth. Counting MAE is the mean absolute per-scene record-count error; exact count is the fraction of scenes with the correct number of records. These definitions are important because every record affects detection, association, and counting.
+
+\subsection{Validation results and ablations}
+Table~\ref{tab:ablation} compares the learned pairwise scorer, the selected scene-level matcher, and the low-confidence recovery variant, all using the same 960-pixel detector outputs. Scene context raises association F1 by 0.0215 over the pairwise scorer and lowers count MAE by 0.035. Recovery raises detection F1 to 0.9826 and association F1 to 0.9542, but reduces given-detection F1 and exact count. A paired bootstrap over validation scenes gives an association difference of +0.00114 for recovery versus the selected matcher (95\% interval [-0.00399, 0.00625]); therefore, the point gain is not conclusive.
+
+\begin{table}[t]
+\centering
+\caption{Validation metrics at 960-pixel detector input. The first row is the selected submission method.}
+\label{tab:ablation}
+\small
+\setlength{\tabcolsep}{3.1pt}
+\begin{tabular}{lccccc}
+\hline
+Method & Det. F1 & Assoc. F1 & Given F1 & MAE & Exact \\
+\hline
+Pairwise scorer & 0.9805 & 0.9316 & 0.9635 & 0.265 & 0.755 \\
+Scene matcher & \textbf{0.9805} & 0.9531 & \textbf{0.9840} & \textbf{0.230} & \textbf{0.790} \\
+Scene matcher + recovery & 0.9826 & \textbf{0.9542} & 0.9810 & 0.240 & 0.785 \\
+\hline
+\end{tabular}
+\end{table}
+
+We also tested two view-specialist detectors with the scene matcher at 640 pixels and a shared-detector/specialist-proposal fusion at 960. The specialist-only system scored 0.9488 association F1 and 0.265 count MAE. Proposal fusion achieved 0.9537 association F1, but count MAE rose to 0.335 and exact count fell to 0.700. This indicates that adding candidate boxes can increase false records even when association point estimates remain similar; neither variant replaces the selected configuration.
+
+\subsection{Training and resources}
+YOLO training used the project train split only and the supplied pretrained YOLO26n initialization. The training log records 80 epochs, 640 input, batch size 16, and a best mAP50 of 0.99094 at epoch 78 (0.99066 at epoch 80). The recorded cumulative timer at epoch 80 is 107,713 seconds; this wall-clock field can include pauses in the run. The runtime environment is Windows with PyTorch 2.14.0+cpu and no CUDA device; the workstation CPU is an Intel Core i5-1135G7. The scene matcher was trained for 35 epochs on CPU. At inference it uses Ultralytics YOLO, frozen DINOv2 crop features, camera metadata, and the course-provided Python evaluator. Public pretrained weights are used only as initialization and image features, and all fine-tuning and calibration data come from this project \cite{yolo26,dinov2}.
